@@ -69,20 +69,20 @@ def limit_send_endpoint(endpoint):
 
 def limit_fuzz_endpoint():
     fuzz_again = 'y'
-    while fuzz_again != 'n':
+    while fuzz_again.lower() != 'n':
         with open(endpoints_wordlist, 'rb') as f:
             endpoints = f.read()
-
             for endpoint in endpoints.decode(errors="ignore").splitlines():
                 if limit_send_endpoint(endpoint):
                     print(f"Found endpoint: '{endpoint}'")
-                    fuzz_again = input("Try to find another endpoint? (y/n)")
-                    if fuzz_again.lower() == 'y':
-                        continue
-                    elif fuzz_again.lower() == 'n':
-                        break
-                    else:
-                        print("Wrong input (y/n)")
+                    while True:
+                        fuzz_again = input("Try to find another endpoint? (y/n)")
+                        if fuzz_again.lower() == 'y':
+                            break
+                        elif fuzz_again.lower() == 'n':
+                            return 
+                        else:
+                            print("Wrong input (y/n)")
                 else:
                     print(f"Endpoint '{endpoint}' was incorrect, reconnecting!")
 
