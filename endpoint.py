@@ -57,6 +57,8 @@ def limitless_fuzz_endpoints():
                 continue
             else:
                 print("Wrong input")
+        else:
+            print(f"Endpoint '{endpoint}' was incorrect, reconnecting!")
 
 # Use this if there's no set ammount of tries!
 def limitless_brute_force(endpoint):
@@ -67,12 +69,6 @@ def limitless_brute_force(endpoint):
     with open(passwords_wordlist, 'rb') as f:
         passwords =f.read()
     try:
-        client_socket.connect((hostname, port))
-    except Exception as e:
-        print(f"Could not connect for brute-force: {e}")
-        return False
-
-    try:
         with open(passwords_wordlist, 'rb') as f:
             passwords = f.read()
 
@@ -80,10 +76,10 @@ def limitless_brute_force(endpoint):
             client_socket.sendall(endpoint.encode())
             response = client_socket.recv(1024).decode(errors="ignore")
         except (OSError, ConnectionError) as e:
-            print(f"Connection error during initial endpoint send: {e}")
-            return False
+            print(f"Connection error: {e}")
 
         if 'password' in response.lower():
+            print("Brute forcing.... ")
             for password in passwords.decode(errors="ignore").splitlines():
                 try:
                     client_socket.sendall(password.encode(errors="ignore"))
@@ -96,6 +92,9 @@ def limitless_brute_force(endpoint):
                     print(response)
                     print(f"Password is '{password}'")
                     return True
+                else:
+                    print(f"Brute forcing.... Response: {response}")
+
     except FileNotFoundError:
         print(f"Password file not found: {passwords_wordlist}")
     finally:
