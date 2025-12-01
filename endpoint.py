@@ -1,13 +1,17 @@
 import socket
 from pathlib import Path
 
-passwords_wordlist = "/usr/share/seclists/Passwords/Leaked-Databases/rockyou.txt"
-endpoints_wordlist = "/home/cccitron/Downloads/API_wordlist"
-#hostname = input("Hostname (IP or hostname): ")
-#port = int(input("Port: "))
 
-hostname = "10.64.179.60" 
-port = 8000
+passwords_wordlist = input("Passwords wordlist: ")
+endpoints_wordlist = input("Endpoints wordlist: ")
+hostname = str(input("IP: ")) 
+while True:
+    try:
+        port = int(input("PORT: "))
+    except ValueError:
+        print("PORT must be a number")
+    else:
+        break
 
 # Use this if there's no set ammount of tries!
 def limitless_fuzz_endpoints():
@@ -200,16 +204,17 @@ def main():
         if version in ("q", "quit", "exit"):
             print("Exiting.")
             return
-
+        
         if version == "limitless":
+            
             # ensure endpoints file exists
             if not Path(endpoints_wordlist).exists():
                 alt = input(f"Endpoints file not found ({endpoints_wordlist}). Enter path or 'c' to cancel: ").strip()
                 if alt.lower() in ("c", "cancel"):
-                    continue
+                    return False
                 if not Path(alt).exists():
                     print(f"Path '{alt}' does not exist. Try again.")
-                    continue
+                    return False
                 # override global for this run
                 globals()['endpoints_wordlist'] = alt
 
@@ -223,18 +228,18 @@ def main():
             if not Path(pw).exists():
                 alt = input(f"Password file not found ({pw}). Enter path or 'c' to cancel: ").strip()
                 if alt.lower() in ("c", "cancel"):
-                    continue
+                    return False
                 if not Path(alt).exists():
                     print(f"Path '{alt}' does not exist. Try again.")
-                    continue
+                    return False
                 pw = alt
             if not Path(ep).exists():
                 alt = input(f"Endpoints file not found ({ep}). Enter path or 'c' to cancel: ").strip()
                 if alt.lower() in ("c", "cancel"):
-                    continue
+                    return False
                 if not Path(alt).exists():
                     print(f"Path '{alt}' does not exist. Try again.")
-                    continue
+                    return False
                 ep = alt
 
             # call limit mode with validated paths
