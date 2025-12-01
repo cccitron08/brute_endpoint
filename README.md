@@ -1,3 +1,6 @@
+NOTE:
+THIS CODE WILL LIKELY REQUIRE TWEAKING AND CHANGES BASED ON ENVIROMENT!
+
 # Socket Interaction Tool (Educational)
 
 This project is a Python script that demonstrates how to:
@@ -116,3 +119,4 @@ This repository is intended **solely for educational exploration of Python netwo
 
 Do **not** use this script against systems you do not own or administer.  
 Unauthorized access or probing of remote systems is illegal and unethical.
+
